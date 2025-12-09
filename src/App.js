@@ -70,7 +70,7 @@ const RoadmapBuilder = () => {
       <rect width="${width}" height="${height}" fill="white"/>
       
       <!-- Header -->
-      <text x="40" y="50" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e3a8a">North Star Roadmap</text>
+      <text x="40" y="50" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e3a8a">Roadmap</text>
       <text x="40" y="90" font-family="Arial, sans-serif" font-size="18" fill="#475569" font-style="italic">${escapeXml(northStar)}</text>
       
       <!-- Legend -->
