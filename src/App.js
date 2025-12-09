@@ -19,7 +19,7 @@ const RoadmapBuilder = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'timeline'
   const timelineRef = useRef(null);
 
-  const quarters = ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026'];
+  const quarters = ['Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026', 'Q1 2027', 'Q2 2027'];
   const statuses = [
     { value: 'committed', label: 'Committed', color: 'bg-green-100 text-green-800 border-green-300', hexColor: '#22c55e' },
     { value: 'available', label: 'Available to Pick Up', color: 'bg-blue-100 text-blue-800 border-blue-300', hexColor: '#3b82f6' },
@@ -32,7 +32,7 @@ const RoadmapBuilder = () => {
       id: Date.now(),
       title: '',
       description: '',
-      quarter: 'Q1 2025',
+      quarter: 'Q1 2026',
       owner: '',
       status: 'available',
       dependencies: '',
