@@ -54,51 +54,43 @@ const RoadmapBuilder = () => {
     const initiativesByQuarter = getInitiativesByQuarter();
     const width = 1600;
     const headerHeight = 180;
-    const legendHeight = 100;
+    const legendHeight = 120;
+    const timelineHeaderHeight = 80;
     const quarterHeight = Math.max(400, Math.max(...quarters.map(q => initiativesByQuarter[q].length * 140 + 100)));
-    const summaryHeight = 120;
-    const height = headerHeight + legendHeight + quarterHeight + summaryHeight;
-    
-    const statusColorMap = {
-      'committed': { bg: '#dcfce7', border: '#86efac', text: '#166534' },
-      'available': { bg: '#dbeafe', border: '#93c5fd', text: '#1e40af' },
-      'needs-decision': { bg: '#fef3c7', border: '#fde047', text: '#854d0e' },
-      'knowledge-gap': { bg: '#fee2e2', border: '#fca5a5', text: '#991b1b' }
-    };
+    const summaryHeight = 180;
+    const padding = 40;
+    const height = headerHeight + legendHeight + timelineHeaderHeight + quarterHeight + summaryHeight + padding;
 
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
       <rect width="${width}" height="${height}" fill="white"/>
       
-      <!-- Header -->
-      <text x="40" y="50" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e3a8a">Roadmap</text>
+      <text x="40" y="50" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e3a8a">North Star Roadmap</text>
       <text x="40" y="90" font-family="Arial, sans-serif" font-size="18" fill="#475569" font-style="italic">${escapeXml(northStar)}</text>
       
-      <!-- Legend -->
       <text x="40" y="${headerHeight + 25}" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">Status Legend:</text>`;
     
     statuses.forEach((status, i) => {
       const x = 40 + (i * 240);
       const y = headerHeight + 40;
-      const colors = statusColorMap[status.value];
+      const colors = statusColors[status.value];
       svg += `
         <rect x="${x}" y="${y}" width="220" height="35" fill="${colors.bg}" stroke="${colors.border}" stroke-width="2" rx="6"/>
         <text x="${x + 110}" y="${y + 22}" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="${colors.text}" text-anchor="middle">${status.label}</text>`;
     });
 
-    // Timeline
-    const timelineY = headerHeight + legendHeight;
+    const timelineY = headerHeight + legendHeight + timelineHeaderHeight;
     svg += `<line x1="40" y1="${timelineY}" x2="${width - 40}" y2="${timelineY}" stroke="#cbd5e1" stroke-width="3"/>`;
     
     quarters.forEach((quarter, i) => {
       const x = 40 + (i * (width - 80) / quarters.length);
       svg += `
-        <text x="${x + 120}" y="${timelineY - 15}" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1f2937" text-anchor="middle">${quarter}</text>
+        <text x="${x + 120}" y="${timelineY - 45}" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1f2937" text-anchor="middle">${quarter}</text>
         <circle cx="${x + 120}" cy="${timelineY}" r="6" fill="#6b7280"/>`;
       
       const quarterInits = initiativesByQuarter[quarter];
       quarterInits.forEach((init, idx) => {
         const cardY = timelineY + 40 + (idx * 140);
-        const colors = statusColorMap[init.status];
+        const colors = statusColors[init.status];
         
         svg += `
           <rect x="${x + 10}" y="${cardY}" width="220" height="120" fill="${colors.bg}" stroke="${colors.border}" stroke-width="2" rx="8"/>
@@ -118,20 +110,19 @@ const RoadmapBuilder = () => {
       });
     });
 
-    // Summary
-    const summaryY = timelineY + quarterHeight + 40;
+    const summaryY = timelineY + quarterHeight + 60;
     svg += `
-      <line x1="40" y1="${summaryY - 20}" x2="${width - 40}" y2="${summaryY - 20}" stroke="#e5e7eb" stroke-width="2"/>
-      <text x="40" y="${summaryY + 5}" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">Summary</text>`;
+      <line x1="40" y1="${summaryY - 30}" x2="${width - 40}" y2="${summaryY - 30}" stroke="#e5e7eb" stroke-width="2"/>
+      <text x="40" y="${summaryY}" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">Summary</text>`;
     
     statuses.forEach((status, i) => {
       const count = initiatives.filter(init => init.status === status.value).length;
       const x = 40 + (i * 240);
-      const colors = statusColorMap[status.value];
+      const colors = statusColors[status.value];
       svg += `
-        <rect x="${x}" y="${summaryY + 20}" width="220" height="70" fill="${colors.bg}" stroke="${colors.border}" stroke-width="2" rx="8"/>
-        <text x="${x + 110}" y="${summaryY + 60}" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="${colors.text}" text-anchor="middle">${count}</text>
-        <text x="${x + 110}" y="${summaryY + 80}" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="${colors.text}" text-anchor="middle">${status.label}</text>`;
+        <rect x="${x}" y="${summaryY + 25}" width="220" height="80" fill="${colors.bg}" stroke="${colors.border}" stroke-width="2" rx="8"/>
+        <text x="${x + 110}" y="${summaryY + 65}" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="${colors.text}" text-anchor="middle">${count}</text>
+        <text x="${x + 110}" y="${summaryY + 88}" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="${colors.text}" text-anchor="middle">${status.label}</text>`;
     });
 
     svg += '</svg>';
@@ -175,7 +166,7 @@ const RoadmapBuilder = () => {
     return (
       <div ref={timelineRef} className="bg-white rounded-xl shadow-lg p-8" id="timeline-view">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-blue-900 mb-3">North Star Roadmap</h1>
+          <h1 className="text-4xl font-bold text-blue-900 mb-3">Roadmap Builder</h1>
           <p className="text-lg text-gray-700 border-l-4 border-blue-500 pl-4">{northStar}</p>
         </div>
 
